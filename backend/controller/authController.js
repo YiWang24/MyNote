@@ -7,6 +7,7 @@ const authController = {
     try {
       // Get user input
       const { firstName, lastName, email, password } = req.body;
+      console.log("firstName", firstName, lastName, email, password);
 
       // Validate user input
       if (!email || !password) {
@@ -53,6 +54,7 @@ const authController = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
+      console.log("email", email,password);
       // Validate user input
       if (!email || !password) {
         return res
@@ -60,14 +62,16 @@ const authController = {
           .json({ message: "Email and password are required" });
       }
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select("+password");
 
       // Check if user exists
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
+
       // Check if password is correct
       const validPassword = await bcrypt.compare(password, user.password);
+ 
       if (!validPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -82,6 +86,7 @@ const authController = {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          image: user.image,
         },
         token,
       });

@@ -5,30 +5,31 @@ import { redirect } from "next/navigation";
 // Create an axios instance
 const request = axios.create({
   baseURL: "http://localhost:8888/api",
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   withCredentials: true,
 });
 
-const whiteList = ["/auth"];
+const whiteList = ["/auth/login", "/auth/register"];
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
+    console.log(config.baseURL+config.url);
+
     const session = await getSession();
     const token = session.accessToken;
 
-    // console.log("Session: ", session);
-
-    console.log("Token: ", session.jwtToken);
+    // console.log("token: ", token);
 
     if (!whiteList.includes(config.url) && token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (whiteList.includes(config.url)) {
       console.log("Request path is in white list");
     } else {
-      // redirect("/");
+      redirect("/");
     }
 
     return config;

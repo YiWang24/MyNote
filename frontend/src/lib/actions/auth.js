@@ -6,14 +6,14 @@ export const githubLogin = async () => {
 export const googleLogin = async () => {
   await signIn("google", { redirectTo: "/notes" });
 };
-export const credentialsLogin = async (email,password) => {
+export const credentialsLogin = async (data) => {
+  const { email, password } = data;
   await signIn("credentials", {
     redirect: false,
     callbackUrl: "/notes",
     email,
     password,
   });
-  
 };
 export const Logout = async () => {
   await signOut({ redirectTo: "/" });

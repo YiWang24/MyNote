@@ -1,5 +1,5 @@
 "use server";
-import { credentialsLogin } from "@/lib/actions/auth";
+// import { credentialsLogin } from "@/lib/actions/auth";
 import connectDB from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { hash } from "bcryptjs";
@@ -33,13 +33,13 @@ const registerUser = async (formData) => {
   console.log("User created successfully", email);
 };
 
-const loginUser = async (formData) => {
-  const { email, password } = formData;
-  try {
-    await credentialsLogin(email, password);
-  } catch (error) {
-    throw new CredentialsSignin("Invalid email or password");
-  }
-};
+// const loginUser = async (formData) => {
+//   const { email, password } = formData;
+//   try {
+//     await credentialsLogin(email, password);
+//   } catch (error) {
+//     throw new CredentialsSignin("Invalid email or password");
+//   }
+// };
 
-export { registerUser, loginUser };
+// export { registerUser, loginUser };

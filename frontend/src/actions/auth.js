@@ -1,6 +1,8 @@
 "use server";
 import { redirect } from "next/navigation";
-import { registerUser, loginUser } from "./user";
+// import { registerUser, loginUser } from "./user";
+import { authApi } from "@/api/auth";
+import { credentialsLogin } from "@/lib/actions/auth";
 
 function validateAuthInput(type, formData) {
   const { first_name, last_name, email, password, password_confirmation } =
@@ -68,11 +70,11 @@ export async function register(prevState, formData) {
     if (marketing_Accept) {
       marketingAccept = true;
     }
-    await registerUser({
+    await authApi.register({
       email,
       password,
-      first_name,
-      last_name,
+      firstName: first_name,
+      lastName: last_name,
       marketingAccept,
     });
   } catch (err) {
@@ -107,7 +109,9 @@ export async function login(prevState, formData) {
   }
 
   try {
-    await loginUser(data);
+    await credentialsLogin(data);
+
+    // console.log(response);
   } catch (err) {
     return {
       enteredValues: {

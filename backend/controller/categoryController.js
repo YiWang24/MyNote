@@ -48,7 +48,7 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategories = async (req, res) => {
   try {
     const userId = req.auth.id;
-    const { categoryIds } = req.body;
+    const categoryIds = req.body;
 
     if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
       return res.status(400).json({ message: "Invalid category IDs" });
@@ -63,12 +63,10 @@ exports.deleteCategories = async (req, res) => {
       return res.status(404).json({ message: "No categories found to delete" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Categories deleted",
-        deletedCount: result.deletedCount,
-      });
+    res.status(200).json({
+      message: "Categories deleted",
+      deletedCount: result.deletedCount,
+    });
 
     console.log("Categories deleted", result);
   } catch (error) {
