@@ -22,7 +22,9 @@ export default async function middleware(request) {
       secret: process.env.AUTH_SECRET,
     });
 
-    if (!token) {
+    // Check token expiration
+  
+    if (!token || token.exp < Math.floor(Date.now() / 1000)) {
       const signInUrl = new URL("/auth?type=login", request.url);
       signInUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(signInUrl);
@@ -32,13 +34,12 @@ export default async function middleware(request) {
   return NextResponse.next();
 }
 
-
 export const config = {
   matcher: [
     /*
-     * 
-     * - api/auth/** 
-     * - _next/static 
+     *
+     * - api/auth/**
+     * - _next/static
      * - _next/image
      * - favicon.ico
      */

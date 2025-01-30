@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import NarBar from "@/components/nav/NavBar";
 import Footer from "@/components/footer/Footer";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,10 +27,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <Toaster />
-
-        <NarBar />
-        {children}
-        <Footer />
+        <SessionProvider>
+          <NarBar />
+          {children}
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

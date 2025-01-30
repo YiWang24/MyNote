@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken } from "next-auth/jwt";
+import { getSession } from "./getSession";
 import { redirect } from "next/navigation";
 
 // Create an axios instance
@@ -16,15 +16,19 @@ const whiteList = ["/auth"];
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
-    const token = await getToken();
-    console.log("Token: ", token);
-    // console.log("config url", config.url);
+    const session = await getSession();
+    const token = session.accessToken;
+
+    // console.log("Session: ", session);
+
+    console.log("Token: ", session.jwtToken);
+
     if (!whiteList.includes(config.url) && token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (whiteList.includes(config.url)) {
       console.log("Request path is in white list");
     } else {
-      redirect("/auth");
+      // redirect("/");
     }
 
     return config;
@@ -43,36 +47,36 @@ request.interceptors.response.use(
   (error) => {
     // console.log("Error: ", error.response.data?.message);
     const message = error.response?.data?.message || "An error occurred";
-    if (error.response) {
-      switch (error.response.status) {
-        case 400:
-          console.error("Bad Request: ", response.data);
+    // if (error.response) {
+    //   switch (error.response.status) {
+    //     case 400:
+    //       console.error("Bad Request: ", response.data);
 
-          break;
-        case 401:
-          console.error("Unauthorized: ", response.data);
+    //       break;
+    //     case 401:
+    //       console.error("Unauthorized: ", response.data);
 
-          break;
-        case 403:
-          console.error("Forbidden: ", response.data);
+    //       break;
+    //     case 403:
+    //       console.error("Forbidden: ", response.data);
 
-          break;
-        case 404:
-          console.error("Not Found: ", response.data);
+    //       break;
+    //     case 404:
+    //       console.error("Not Found: ", response.data);
 
-          break;
-        case 409:
-          console.error("Conflict: ", response.data);
+    //       break;
+    //     case 409:
+    //       console.error("Conflict: ", response.data);
 
-          break;
-        case 500:
-          console.error("Server Error: ", response.data);
+    //       break;
+    //     case 500:
+    //       console.error("Server Error: ", response.data);
 
-          break;
-        default:
-          console.error("Unhandled status code: ", response.status);
-      }
-    }
+    //       break;
+    //     default:
+    //       console.error("Unhandled status code: ", response.status);
+    //   }
+    // }
     return Promise.reject(error);
   }
 );

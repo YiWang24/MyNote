@@ -2,7 +2,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
-import { fetchGitHubStars } from "@/api/statistic";
+import { fetchGitHubStars } from "@/actions/statistic";
 
 const GithubStar = ({ owner, repo, className, href }) => {
   const stars = fetchGitHubStars(owner, repo);

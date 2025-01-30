@@ -9,4 +9,10 @@ export const API_ROUTES = {
     UPDATE: (id) => `/notes/${id}`,
     DELETE: (id) => `/notes/${id}`,
   },
+  CATEGORY:{
+    CREATE: "/categories",
+    GET: "/categories",
+    UPDATE: (id) => `/categories/${id}`,
+    DELETE:"/categories"
+  }
 };
