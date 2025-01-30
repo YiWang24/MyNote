@@ -1,4 +1,5 @@
 const Note = require("../models/note");
+const category = require("../models/category");
 
 const noteController = {
   async getNotes(req, res) {
@@ -8,7 +9,9 @@ const noteController = {
 
       //find note by id
       if (noteId) {
-        const note = await Note.findOne({ userId, _id: noteId });
+        const note = await Note.findOne({ userId, _id: noteId }).populate(
+          "category"
+        );
         if (!note) {
           return res.status(404).json({ message: "Note not found" });
         }
@@ -21,9 +24,11 @@ const noteController = {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const category = req.query.category;
-        const notes = await Note.find({ userId, category: category })
+        const categoryObj = await Category.findOne({ type: category });
+        const notes = await Note.find({ userId, category: categoryObj._id })
           .skip(skip)
-          .limit(limit);
+          .limit(limit)
+          .populate("category");
         const totalNotes = await Note.countDocuments();
         const totalPages = Math.ceil(totalNotes / limit);
         console.log("user get notes", userId);
@@ -43,11 +48,12 @@ const noteController = {
       const userId = req.auth.id;
       //create note
       const { title, content, category } = req.body;
+      const categoryObj = await Category.findOne({ name: category });
       const note = new Note({
+        userId,
         title,
         content,
-        category,
-        userId,
+        category: categoryObj._id,
       });
       await note.save();
       res
@@ -64,9 +70,10 @@ const noteController = {
       const userId = req.auth.id;
       const noteId = req.params.id;
       const { title, content, category } = req.body;
+      const categoryObj = await Category.findOne({ name: category });
       const updateNote = await Note.findOneAndUpdate(
         { userId, _id: noteId },
-        { title, content, category },
+        { title, content, category: categoryObj._id },
         { new: true }
       );
       if (!updateNote) {

@@ -16,9 +16,9 @@ const NoteSchema = new Schema({
     default: Date.now,
   },
   category: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Category",
     required: true,
-    trim: true,
   },
   updatedAt: {
     type: Date,

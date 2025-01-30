@@ -5,8 +5,7 @@ const page = async ({ searchParams }) => {
   const params = await searchParams;
   const formType = params.type || "login";
   const session = await getSession();
-  console.log(session);
-  if (session.user) {
+  if (session?.user) {
     redirect("/notes");
   }
   return (
