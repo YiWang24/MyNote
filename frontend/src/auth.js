@@ -36,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          email: user.email,
+          image: user.image,
           role: user.role,
           id: user._id,
         };
@@ -46,5 +46,52 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   pages: {
     signIn: "/auth?type=login",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.sub && token?.role) {
+        session.user.id = token.sub;
+        session.user.image = token.image;
+        session.user.email = token.email;
+        session.user.role = token.role;
+      }
+      return session;
+    },
+    signIn: async ({ user, account }) => {
+      console.log(account.provider);
+      if (account?.provider === "github" || account?.provider === "google") {
+        const provider = account.provider;
+        try {
+          const { email, name, image, id } = user;
+          await connectDB();
+          const alreadyUser = await User.findOne({ email });
+          if (!alreadyUser) {
+            await User.create({
+              email,
+              firstName: name,
+              lastName: name,
+              image,
+              [`${provider}ProviderId`]: id,
+            });
+          } else {
+            return true;
+          }
+        } catch (error) {
+          throw new Error("Error while signing in with Github");
+        }
+        return true;
+      }
+      if (account?.provider === "credentials") {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 });
