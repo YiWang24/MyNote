@@ -34,6 +34,9 @@ const NewNote = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createNote({ title, category, content });
+    setTitle("");
+    setCategory("");
+    setContent("");
     controlNoteModal();
   };
 
@@ -116,7 +119,7 @@ const NewNote = () => {
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent position="popper">
-                        {categories.map((category) => (
+                        {categories?.map((category) => (
                           <SelectItem key={category._id} value={category._id}>
                             {category.type}
                           </SelectItem>

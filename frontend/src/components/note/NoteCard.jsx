@@ -9,12 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Meteors } from "../ui/meteors";
-import { MagicCard } from "../ui/magic-card";
-import { useRef } from "react";
-
 
 const NoteCard = ({ note }) => {
-
   return (
     <div className="relative block overflow-hidden rounded-lg border bg-pink-100 border-gray-100 p-4 sm:p-6 lg:p-8">
       <Meteors number={30} />
@@ -69,7 +65,6 @@ const NoteCard = ({ note }) => {
           <dd className="text-xs text-gray-500">3 minute</dd>
         </div>
       </dl>
-     
     </div>
   );
 };

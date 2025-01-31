@@ -5,7 +5,7 @@ import { useNoteContext } from "@/lib/noteContext";
 import { Confetti } from "@/components/ui/confetti";
 const NoteArea = () => {
   const { notes, isLoading } = useNoteContext();
-  const confettiRef = useRef(null);
+
   // console.log(notes);
 
   if (isLoading) {
@@ -21,13 +21,6 @@ const NoteArea = () => {
       {!isLoading &&
         notes?.length > 0 &&
         notes.map((note) => <NoteCard key={note._id} note={note} />)}
-      <Confetti
-        ref={confettiRef}
-        className="absolute left-0 top-0 z-0 size-full"
-        onMouseEnter={() => {
-          confettiRef.current?.fire({});
-        }}
-      />
     </div>
   );
 };

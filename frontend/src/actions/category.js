@@ -11,14 +11,20 @@ export async function fetchCategories() {
       return null;
     }
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     return null;
   }
 }
 
 export async function fetchCreateCategory(category) {
   try {
-    await categoryApi.createCategory(category);
+    const response = await categoryApi.createCategory(category);
+    console.log(response);
+    if (response.status === 201) {
+      return response.data;
+    } else {
+      return null;
+    }
   } catch {
     throw new Error("Error creating category");
   }

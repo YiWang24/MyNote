@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getSession } from "./getSession";
 import { redirect } from "next/navigation";
-
+import { signOut } from "@/auth";
 // Create an axios instance
 const request = axios.create({
   baseURL: "http://localhost:8888/api",
@@ -17,11 +17,11 @@ const whiteList = ["/auth/login", "/auth/register"];
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
-    console.log(config.baseURL+config.url);
+    console.log(config.baseURL + config.url);
 
     const session = await getSession();
-    const token = session.accessToken;
-
+    const token = session?.accessToken;
+    // console.log(session);
     // console.log("token: ", token);
 
     if (!whiteList.includes(config.url) && token) {
@@ -29,7 +29,11 @@ request.interceptors.request.use(
     } else if (whiteList.includes(config.url)) {
       console.log("Request path is in white list");
     } else {
-      redirect("/");
+      await signOut({
+        redirect: true,
+        callbackUrl: "/auth?type=login",
+      });
+      localStorage.clear();
     }
 
     return config;

@@ -77,6 +77,7 @@ export async function register(prevState, formData) {
       lastName: last_name,
       marketingAccept,
     });
+    // console.log(response);
   } catch (err) {
     return {
       enteredValues: {

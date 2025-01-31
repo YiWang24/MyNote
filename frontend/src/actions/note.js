@@ -18,10 +18,10 @@ export async function fetchNotes(params) {
         meta: response.data.meta,
       };
     } else {
-      return null;
+      return { data: [], meta: {} };
     }
   } catch (error) {
-    throw new Error(error);
+    return { data: [], meta: {} };
   }
 }
 

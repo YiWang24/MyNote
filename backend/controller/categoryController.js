@@ -5,6 +5,7 @@ exports.createCategory = async (req, res) => {
   try {
     const userId = req.auth.id;
     const category = new Category({ ...req.body, userId });
+    console.log("Category", category, userId);
     await category.save();
     res.status(201).json(category);
     console.log("Category created", category);

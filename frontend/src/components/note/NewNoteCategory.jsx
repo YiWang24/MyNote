@@ -44,7 +44,7 @@ const NewNoteCategory = () => {
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">Current Categories</h3>
               <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <span
                     key={category._id}
                     onClick={() => handleCategoryClick(category._id)}

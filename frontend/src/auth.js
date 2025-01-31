@@ -26,6 +26,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = response.data.user;
         const accessToken = response.data.token;
+        console.log("response", response);
+        console.log("user", user);
+        console.log("accessToken", accessToken);
 
         return {
           id: user.id,
@@ -46,6 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return {
         ...token,
+        ...user,
       };
     },
     async session({ session, token }) {
