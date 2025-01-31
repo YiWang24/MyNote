@@ -16,7 +16,7 @@ export async function fetchCategories() {
   }
 }
 
-export async function createCategory(category) {
+export async function fetchCreateCategory(category) {
   try {
     await categoryApi.createCategory(category);
   } catch {
@@ -38,7 +38,7 @@ export async function updateCategory(categoryId, category) {
   }
 }
 
-export async function deleteCategories(categoryIds) {
+export async function fetchDeleteCategories(categoryIds) {
   try {
     const response = await categoryApi.deleteCategories(categoryIds);
     if (response.status === 200) {

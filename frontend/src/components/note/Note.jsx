@@ -6,11 +6,11 @@ import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
 import NotePage from "./NotePage";
 import NewNote from "./NewNote";
 import NewNoteCategory from "./NewNoteCategory";
-import { fetchCategories } from "@/actions/category";
+
 import { NoteContextProvider } from "@/lib/noteContext";
 
 const Note = async () => {
-  const categories = await fetchCategories();
+
 
   return (
     <NoteContextProvider>
@@ -21,7 +21,7 @@ const Note = async () => {
           <NoteArea />
           <NotePage />
           <NewNote />
-          <NewNoteCategory initialCategories={categories || []} />
+          <NewNoteCategory  />
         </div>
       </NeonGradientCard>
     </NoteContextProvider>

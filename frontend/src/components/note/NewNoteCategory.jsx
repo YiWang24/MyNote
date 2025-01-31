@@ -3,10 +3,15 @@ import React, { useState, useEffect } from "react";
 import { createCategory, deleteCategories } from "@/actions/category";
 import { useNoteContext } from "@/lib/noteContext";
 import toast from "react-hot-toast";
-const NewNoteCategory = ({ initialCategories }) => {
-  const { isCategoryModalOpen, controlCategoryModal } = useNoteContext();
+const NewNoteCategory = () => {
+  const {
+    categories,
+    isCategoryModalOpen,
+    controlCategoryModal,
+    deleteCategories,
+    createCategory,
+  } = useNoteContext();
 
-  const [categories, setCategories] = useState(initialCategories);
   const [newCategory, setNewCategory] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -19,35 +24,17 @@ const NewNoteCategory = ({ initialCategories }) => {
   };
 
   const handleDelete = async () => {
-    try {
-      await deleteCategories(selectedCategories);
-      console.log("Deleted categories:", selectedCategories);
-      setCategories((prev) =>
-        prev.filter((category) => !selectedCategories.includes(category._id))
-      );
-      setSelectedCategories([]);
-    } catch (error) {
-      console.error("Error deleting categories:", error);
-    }
+    await deleteCategories(selectedCategories);
+    setSelectedCategories([]);
   };
 
-  // console.log(categories);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newCategory.trim() === "") return;
-    try {
-      const createdCategory = await createCategory({
-        type: newCategory,
-      });
-      if (createdCategory) {
-        toast.success("Category created successfully");
-        setCategories([...categories, createdCategory]);
-        setNewCategory("");
-      }
-    } catch (error) {
-      toast.error("category already exists");
-      console.error("Error creating category:", error);
-    }
+
+    createCategory(newCategory);
+    setNewCategory("");
   };
   return (
     <>
