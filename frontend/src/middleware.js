@@ -16,20 +16,20 @@ export default async function middleware(request) {
     pathname.startsWith(path)
   );
 
-  if (isProtectedPath) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-    });
+  // if (isProtectedPath) {
+  //   const token = await getToken({
+  //     req: request,
+  //     secret: process.env.AUTH_SECRET,
+  //   });
 
-    // Check token expiration
-    console.log(token);
-    if (!token || token.exp < Math.floor(Date.now() / 1000)) {
-      const signInUrl = new URL("/auth?type=login", request.url);
-      signInUrl.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(signInUrl);
-    }
-  }
+  //   // Check token expiration
+  //   console.log(token);
+  //   if (!token || token.exp < Math.floor(Date.now() / 1000)) {
+  //     const signInUrl = new URL("/auth?type=login", request.url);
+  //     signInUrl.searchParams.set("callbackUrl", pathname);
+  //     return NextResponse.redirect(signInUrl);
+  //   }
+  // }
 
   return NextResponse.next();
 }
