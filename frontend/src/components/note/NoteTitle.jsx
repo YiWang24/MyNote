@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { useNoteContext } from "@/lib/noteContext";
 import { Avatar } from "../ui/avatar";
+
+import { TextAnimate } from "../ui/text-animate";
 
 const NoteTitle = () => {
   const { controlCategoryModal, controlNoteModal } = useNoteContext();
@@ -16,7 +17,9 @@ const NoteTitle = () => {
         </Avatar>
         <div className="text-[17px] flex gap-1">
           <span className="font-bold text-red">Sinu</span>
-          <span>Notes</span>
+          <TextAnimate animation="blurInUp" by="character">
+            Notes
+          </TextAnimate>
         </div>
       </div>
       <div className="flex gap-2">

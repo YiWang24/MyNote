@@ -5,11 +5,18 @@ import {
   fetchCreateCategory,
   fetchDeleteCategories,
 } from "@/actions/category";
+import {
+  fetchNotes,
+  fetchCreateNote,
+  fetchDeleteNotes,
+  fetchUpdateNote,
+} from "@/actions/note";
 import toast from "react-hot-toast";
 
 export const NoteContext = createContext({
   categories: [],
   notes: [],
+  noteMeta: {},
   isLoading: true,
   isCategoryModalOpen: false,
   isNoteModalOpen: false,
@@ -17,11 +24,13 @@ export const NoteContext = createContext({
   controlNoteModal: () => {},
   deleteCategories: () => {},
   createCategory: () => {},
+  createNote: () => {},
 });
 
 export function NoteContextProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [notes, setNotes] = useState([]);
+  const [noteMeta, setNoteMeta] = useState({});
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const controlCategoryModal = () =>
@@ -41,8 +50,23 @@ export function NoteContextProvider({ children }) {
     }
   };
 
+  const refreshNotes = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetchNotes({ page: 1, pageSize: 3 });
+      // console.log(response);
+      setNotes(response.data);
+      setNoteMeta(response.meta);
+    } catch (error) {
+      toast.error("Failed to fetch notes");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     refreshCategories();
+    refreshNotes();
   }, []);
 
   const deleteCategories = async (categories) => {
@@ -68,16 +92,29 @@ export function NoteContextProvider({ children }) {
     }
   };
 
+  const createNote = async (formData) => {
+    try {
+      // console.log(formData);
+      await fetchCreateNote(formData);
+      toast.success("Note created successfully");
+      refreshNotes();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
   const value = {
     isLoading,
     categories,
     notes,
+    noteMeta,
     isCategoryModalOpen,
     isNoteModalOpen,
     controlCategoryModal,
     controlNoteModal,
     deleteCategories,
     createCategory,
+    createNote,
   };
 
   return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;

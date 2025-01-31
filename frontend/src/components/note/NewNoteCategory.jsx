@@ -1,8 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { createCategory, deleteCategories } from "@/actions/category";
+import React, { useState } from "react";
 import { useNoteContext } from "@/lib/noteContext";
-import toast from "react-hot-toast";
 const NewNoteCategory = () => {
   const {
     categories,
@@ -28,7 +26,6 @@ const NewNoteCategory = () => {
     setSelectedCategories([]);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newCategory.trim() === "") return;
@@ -38,13 +35,6 @@ const NewNoteCategory = () => {
   };
   return (
     <>
-      <button
-        onClick={controlCategoryModal}
-        className="rounded-lg p-2 text-[12px] pl-4 pr-4 border border-red-500 bg-transparent text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300"
-      >
-        Add Category
-      </button>
-
       {isCategoryModalOpen && (
         <div className="fixed inset-0 overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 w-full max-w-md z-50 m-4">

@@ -1,10 +1,44 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useNoteContext } from "@/lib/noteContext";
+import { LineShadowText } from "@/components/ui/line-shadow-text";
+import React, { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Particles } from "@/components/ui/particles";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const NewNote = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("");
+  const { categories, controlNoteModal, isNoteModalOpen, createNote } =
+    useNoteContext();
+  const formRef = useRef(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await createNote({ title, category, content });
+    controlNoteModal();
+  };
+
   useEffect(() => {
-    if (isOpen) {
+    if (isNoteModalOpen) {
       // Get current scroll width
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
@@ -20,11 +54,11 @@ const NewNote = () => {
       document.body.style.paddingRight = "";
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isNoteModalOpen]);
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={controlNoteModal}
         className="fixed bottom-6 right-6 rounded-full bg-pink-500 p-4 text-white shadow-lg transition-transform hover:bg-pink-600 hover:scale-110"
       >
         <svg
@@ -43,60 +77,79 @@ const NewNote = () => {
         </svg>
       </button>
 
-      {isOpen && (
+      {isNoteModalOpen && (
         <div className="fixed inset-0 overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-md z-50 m-4">
-            <h2 className="text-2xl font-bold mb-4">New Note</h2>
-
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Category
-                </label>
-                <select className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
-                  <option>Work</option>
-                  <option>Personal</option>
-                  <option>Study</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Content
-                </label>
-                <textarea
-                  rows="4"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                ></textarea>
-              </div>
-
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-500"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600"
-                >
-                  Save Note
-                </button>
-              </div>
-            </form>
-          </div>
+          <Particles
+            className="absolute inset-0 z-0"
+            quantity={100}
+            ease={80}
+            color="#ffffff"
+            refresh
+          />
+          <Card className="w-[350px] sm:w-[450px] md:w-[550px] lg:w-[650px]">
+            <CardHeader>
+              <CardTitle>
+                Create{" "}
+                <LineShadowText className="italic" shadowColor="black">
+                  Note
+                </LineShadowText>
+              </CardTitle>
+              <CardDescription>Write your note and save it</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form ref={formRef} onSubmit={handleSubmit}>
+                <div className="grid w-full items-center gap-4">
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      id="title"
+                      name="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Title of your note"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="category">Framework</Label>
+                    <Select onValueChange={setCategory}>
+                      <SelectTrigger id="category">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        {categories.map((category) => (
+                          <SelectItem key={category._id} value={category._id}>
+                            {category.type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="content">Content</Label>
+                    <Textarea
+                      id="content"
+                      name="content"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Type your note here."
+                      className="h-60"
+                    />
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button variant="destructive" onClick={controlNoteModal}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                onClick={() => formRef.current?.requestSubmit()}
+              >
+                Create
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
       )}
     </>

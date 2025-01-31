@@ -1,37 +1,40 @@
 const Note = require("../models/note");
-const category = require("../models/category");
+const Category = require("../models/category");
 
 const noteController = {
   async getNotes(req, res) {
+    const userId = req.auth.id;
+    const noteId = req.query.id || null;
+    const category = req.query.category || null;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+    const skip = (page - 1) * limit;
+    console.log("user get notes", userId, noteId, category, page, limit, skip);
     try {
-      const userId = req.auth.id;
-      const noteId = req.query.id;
-
       //find note by id
       if (noteId) {
-        const note = await Note.findOne({ userId, _id: noteId }).populate(
-          "category"
-        );
+        const note = await Note.findOne({ userId, _id: noteId })
+          .populate("category", "type ")
+          .populate("userId", "firstName lastName email image");
         if (!note) {
           return res.status(404).json({ message: "Note not found" });
         }
-        console.log("user get notes", userId, noteId);
+        console.log("user get notes by note id", userId, noteId);
         return res.status(200).json({ message: "get note by id ", data: note });
       }
       //find all notes
       else {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
-        const category = req.query.category;
-        const categoryObj = await Category.findOne({ type: category });
-        const notes = await Note.find({ userId, category: categoryObj._id })
+        const notes = await Note.find({
+          userId,
+          category: category ? category : { $ne: null },
+        })
           .skip(skip)
           .limit(limit)
-          .populate("category");
+          .populate("category", "type ")
+          .populate("userId", "firstName lastName email image");
         const totalNotes = await Note.countDocuments();
         const totalPages = Math.ceil(totalNotes / limit);
-        console.log("user get notes", userId);
+        console.log("user get all  notes", userId, notes);
         res.status(200).json({
           message: "get all notes",
           data: notes,
@@ -48,12 +51,12 @@ const noteController = {
       const userId = req.auth.id;
       //create note
       const { title, content, category } = req.body;
-      const categoryObj = await Category.findOne({ name: category });
+      console.log("user create note", userId, title, content, category);
       const note = new Note({
         userId,
         title,
         content,
-        category: categoryObj._id,
+        category,
       });
       await note.save();
       res
