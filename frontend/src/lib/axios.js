@@ -30,8 +30,8 @@ request.interceptors.request.use(
       console.log("Request path is in white list");
     } else {
       await signOut({
-        redirect: true,
-        callbackUrl: "/auth?type=login",
+        redirect: false,
+        // callbackUrl: "/auth?type=login",
       });
       localStorage.clear();
     }

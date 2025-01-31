@@ -23,7 +23,7 @@ export default async function middleware(request) {
     });
 
     // Check token expiration
-  
+    console.log(token);
     if (!token || token.exp < Math.floor(Date.now() / 1000)) {
       const signInUrl = new URL("/auth?type=login", request.url);
       signInUrl.searchParams.set("callbackUrl", pathname);
