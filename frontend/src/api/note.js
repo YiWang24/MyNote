@@ -5,6 +5,6 @@ export const noteApi = {
   create: (data) => request.post(API_ROUTES.NOTE.CREATE, data),
   get: (params) =>
     request.get(`${API_ROUTES.NOTE.GET}?${new URLSearchParams(params)}`),
-  update: async (id, data) => request.put(API_ROUTES.NOTE.UPDATE(id), data),
-  delete: async (id) => request.delete(API_ROUTES.NOTE.DELETE(id)),
+  update: (id, data) => request.put(API_ROUTES.NOTE.UPDATE(id), data),
+  delete: (id) => request.delete(API_ROUTES.NOTE.DELETE(id)),
 };

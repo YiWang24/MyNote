@@ -27,20 +27,15 @@ export async function fetchNotes(params) {
 
 export async function fetchUpdateNote(id, note) {
   try {
-    const response = await noteApi.update(id, note);
-    if (response.status === 200) {
-      return response.data;
-    }
+    console.log(id, note);
+    await noteApi.update(id, note);
   } catch (error) {
     throw new Error(error);
   }
 }
 export async function fetchDeleteNotes(id) {
   try {
-    const response = await noteApi.delete(id);
-    if (response.status === 200) {
-      return response.data;
-    }
+    await noteApi.delete(id);
   } catch (error) {
     throw new Error(error);
   }

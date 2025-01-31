@@ -69,22 +69,30 @@ const noteController = {
   },
 
   async updateNote(req, res) {
+    // console.log("update note", req.body, req.params);
     try {
       const userId = req.auth.id;
       const noteId = req.params.id;
+      // console.log("user update note", userId, noteId);
       const { title, content, category } = req.body;
-      const categoryObj = await Category.findOne({ name: category });
+      console.log("user update note", userId, noteId, title, content, category);
+      const categoryObj = await Category.findOne({ _id: category });
+      if (!categoryObj) {
+        return res.status(404).json({ message: "Category not found" });
+      }
       const updateNote = await Note.findOneAndUpdate(
         { userId, _id: noteId },
         { title, content, category: categoryObj._id },
         { new: true }
       );
       if (!updateNote) {
+        console.log("can not find the  note", userId, noteId);
         return res.status(404).json({ message: "Note not found" });
       }
       res.status(200).json({ message: "Note updated successfully" });
       console.log("user update note", userId, noteId);
     } catch (error) {
+      console.log("error update note", error);
       res.status(500).json({ message: error.message });
     }
   },

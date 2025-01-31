@@ -1,23 +1,19 @@
-import React from "react";
-const notes = [
-  { id: 1, title: "Note 1", category: "Work" },
-  { id: 2, title: "Note 2", category: "Personal" },
-  { id: 3, title: "Note 3", category: "Work" },
-  { id: 4, title: "Note 4", category: "Study" },
-  { id: 5, title: "Note 5", category: "Personal" },
-];
-const clickedCategory = null;
-const NoteCategory = () => {
-  const categories = notes.map((note) => note.category);
+"use client";
+import { useNoteContext } from "@/lib/noteContext";
+import React, { useState } from "react";
 
-  const uniqueCategories = [...new Set(categories)];
+const NoteCategory = () => {
+  const { categories, selectedCategory, setSelectedCategory } =
+    useNoteContext();
+
   return (
     <div>
       <div>
         <nav className="flex gap-4" aria-label="Tabs">
           <button
+            onClick={() => setSelectedCategory(() => "all")}
             className={`rounded-lg p-2 text-[12px] pl-4 pr-4 border border-red-500 ${
-              clickedCategory === null
+              selectedCategory === "all"
                 ? "bg-red-500 text-white"
                 : "bg-transparent text-red-500"
             }`}
@@ -25,18 +21,19 @@ const NoteCategory = () => {
             All
           </button>
 
-          {uniqueCategories.map((uniqueCategory, index) => (
+          {categories.map((category) => (
             <button
               // onClick={() => handleClickedCategory(uniqueCategory)}
-              key={index}
+              key={category._id}
+              onClick={() => setSelectedCategory(() => category._id)}
               className={`rounded-lg p-2 text-[12px] pl-4 pr-4 border border-red-500
              text-red-500 ${
-               clickedCategory === uniqueCategory
+               selectedCategory === category._id
                  ? "bg-red-500 text-white"
                  : "bg-transparent : text-red-500"
              }`}
             >
-              {uniqueCategory}
+              {category.type}
             </button>
           ))}
         </nav>

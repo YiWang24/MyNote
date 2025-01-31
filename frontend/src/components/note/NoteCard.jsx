@@ -1,18 +1,31 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
 import { Meteors } from "../ui/meteors";
+import { useNoteContext } from "@/lib/noteContext";
+import { Button } from "../ui/button";
 
 const NoteCard = ({ note }) => {
+  const { getNoteById, deleteNote } = useNoteContext();
+  const handleClick = () => {
+    getNoteById(note._id);
+  };
+  const handleDialogClick = (e) => {
+    e.stopPropagation(); // Stop event from reaching parent
+  };
   return (
-    <div className="relative block overflow-hidden rounded-lg border bg-pink-100 border-gray-100 p-4 sm:p-6 lg:p-8">
+    <div
+      onClick={handleClick}
+      className="relative block cursor-pointer overflow-hidden rounded-lg border bg-pink-100 border-gray-100 p-4 sm:p-6 lg:p-8"
+    >
       <Meteors number={30} />
       <span className="absolute  inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"></span>
 
@@ -27,24 +40,41 @@ const NoteCard = ({ note }) => {
           </p>
         </div>
 
-        <div className="hidden sm:block sm:shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Open</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  Edit
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Delete
-                  <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div
+          className="hidden sm:block sm:shrink-0"
+          onClick={handleDialogClick}
+        >
+          <Dialog>
+            <DialogTrigger
+              className="inline-flex items-center px-4 py-2 rounded-md 
+    text-sm font-medium transition-colors
+    bg-red-50 text-red-600
+    hover:bg-red-100
+    dark:bg-red-900/10 dark:text-red-500 dark:hover:bg-red-900/20
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
+    disabled:pointer-events-none disabled:opacity-50"
+            >
+              Delete
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your Note and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  type="submit"
+                  onClick={() => deleteNote(note._id)}
+                  className="bg-red-500 hover:bg-red-600"
+                >
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

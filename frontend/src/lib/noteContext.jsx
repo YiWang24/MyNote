@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 
 export const NoteContext = createContext({
   categories: [],
+  selectedCategory: "",
   notes: [],
   noteMeta: {},
   newNote: {},
@@ -22,20 +23,32 @@ export const NoteContext = createContext({
   isCategoryModalOpen: false,
   isNoteModalOpen: false,
   setNewNote: () => {},
+  setSelectedCategory: () => {},
+  setCategories: () => {},
   controlCategoryModal: () => {},
   controlNoteModal: () => {},
   deleteCategories: () => {},
   createCategory: () => {},
   createNote: () => {},
+  getNoteById: () => {},
+  deleteNote: () => {},
 });
 
 export function NoteContextProvider({ children }) {
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [notes, setNotes] = useState([]);
   const [noteMeta, setNoteMeta] = useState({});
   const [newNote, setNewNote] = useState({
+    id: "",
     title: "",
     content: "",
+    category: "",
+    update: false,
+  });
+  const [query, setQuery] = useState({
+    page: 1,
+    limit: 3,
     category: "",
   });
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -57,13 +70,18 @@ export function NoteContextProvider({ children }) {
     }
   };
 
-  const refreshNotes = async () => {
+  const refreshNotes = async (category) => {
     try {
       setIsLoading(true);
-      const response = await fetchNotes({ page: 1, pageSize: 3 });
+      const newQuery = {
+        ...query,
+        category: category === "all" || category === null ? "" : category,
+      };
+      const response = await fetchNotes(newQuery);
       // console.log(response);
       setNotes(response.data);
       setNoteMeta(response.meta);
+      setQuery(newQuery); // Update query after fetch
     } catch (error) {
       toast.error("Failed to fetch notes");
     } finally {
@@ -75,6 +93,10 @@ export function NoteContextProvider({ children }) {
     refreshCategories();
     refreshNotes();
   }, []);
+
+  useEffect(() => {
+    refreshNotes(selectedCategory);
+  }, [selectedCategory]);
 
   const deleteCategories = async (categories) => {
     try {
@@ -98,10 +120,49 @@ export function NoteContextProvider({ children }) {
   };
 
   const createNote = async (formData) => {
+    console.log(formData);
     try {
-      console.log(formData);
-      await fetchCreateNote(formData);
+      if (formData.update) {
+        const id = formData.id;
+        const note = {
+          title: formData.title,
+          content: formData.content,
+          category: formData.category,
+        };
+        await fetchUpdateNote(id, note);
+      } else {
+        await fetchCreateNote(formData);
+      }
       toast.success("Note created successfully");
+      refreshNotes();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const getNoteById = (noteId) => {
+    {
+      const selectNode = notes.find((note) => note._id === noteId);
+      // console.log(selectNode);
+      if (selectNode) {
+        setNewNote({
+          id: selectNode._id,
+          title: selectNode.title,
+          content: selectNode.content,
+          category: selectNode.category._id,
+          update: true,
+        });
+        controlNoteModal();
+      } else {
+        toast.error("Note not found");
+      }
+    }
+  };
+
+  const deleteNote = async (noteId) => {
+    try {
+      await fetchDeleteNotes(noteId);
+      toast.success("Note deleted successfully");
       refreshNotes();
     } catch (error) {
       toast.error("Something went wrong");
@@ -111,17 +172,21 @@ export function NoteContextProvider({ children }) {
   const value = {
     isLoading,
     categories,
+    selectedCategory,
     notes,
     newNote,
     noteMeta,
     isCategoryModalOpen,
     isNoteModalOpen,
     setNewNote,
+    setSelectedCategory,
     controlCategoryModal,
     controlNoteModal,
     deleteCategories,
     createCategory,
     createNote,
+    getNoteById,
+    deleteNote,
   };
 
   return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;
