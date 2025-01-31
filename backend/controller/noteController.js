@@ -42,13 +42,7 @@ const noteController = {
           .populate("userId", "firstName lastName email image");
         const totalNotes = await Note.countDocuments(query);
         const totalPages = Math.ceil(totalNotes / limit);
-        console.log(
-          "user get all  notes",
-          userId,
-          totalNotes,
-          totalPages,
-          notes
-        );
+        console.log("user get all  notes", userId, totalNotes, totalPages);
         res.status(200).json({
           message: "get all notes",
           data: notes,
