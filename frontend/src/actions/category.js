@@ -46,14 +46,12 @@ export async function updateCategory(categoryId, category) {
 
 export async function fetchDeleteCategories(categoryIds) {
   try {
+    // console.log(categoryIds);
     const response = await categoryApi.deleteCategories(categoryIds);
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      return null;
-    }
+    return response.data;
   } catch (error) {
-    console.error(error);
-    return null;
+    throw new Error(
+      error.response?.data?.message || "Failed to delete categories"
+    );
   }
 }

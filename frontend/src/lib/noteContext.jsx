@@ -17,9 +17,11 @@ export const NoteContext = createContext({
   categories: [],
   notes: [],
   noteMeta: {},
+  newNote: {},
   isLoading: true,
   isCategoryModalOpen: false,
   isNoteModalOpen: false,
+  setNewNote: () => {},
   controlCategoryModal: () => {},
   controlNoteModal: () => {},
   deleteCategories: () => {},
@@ -31,6 +33,11 @@ export function NoteContextProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [notes, setNotes] = useState([]);
   const [noteMeta, setNoteMeta] = useState({});
+  const [newNote, setNewNote] = useState({
+    title: "",
+    content: "",
+    category: "",
+  });
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const controlCategoryModal = () =>
@@ -71,14 +78,12 @@ export function NoteContextProvider({ children }) {
 
   const deleteCategories = async (categories) => {
     try {
-      await fetchDeleteCategories(categories);
+      const result = await fetchDeleteCategories(categories);
       await refreshCategories();
-      toast.success("Category deleted successfully");
-      setCategories((prev) =>
-        prev.filter((category) => !categories.includes(category._id))
-      );
+      toast.success(result.message);
     } catch (error) {
-      toast.error("Error deleting categories");
+      toast.error(error.message);
+    } finally {
     }
   };
 
@@ -94,7 +99,7 @@ export function NoteContextProvider({ children }) {
 
   const createNote = async (formData) => {
     try {
-      // console.log(formData);
+      console.log(formData);
       await fetchCreateNote(formData);
       toast.success("Note created successfully");
       refreshNotes();
@@ -107,9 +112,11 @@ export function NoteContextProvider({ children }) {
     isLoading,
     categories,
     notes,
+    newNote,
     noteMeta,
     isCategoryModalOpen,
     isNoteModalOpen,
+    setNewNote,
     controlCategoryModal,
     controlNoteModal,
     deleteCategories,

@@ -21,17 +21,18 @@ request.interceptors.request.use(
 
     const session = await getSession();
     const token = session?.accessToken;
+    const expiresAt = new Date(session?.expires);
     // console.log(session);
-    // console.log("token: ", token);
+    console.log("token: ", token, expiresAt);
 
-    if (!whiteList.includes(config.url) && token) {
+    if (!whiteList.includes(config.url) && token && expiresAt > new Date()) {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (whiteList.includes(config.url)) {
       console.log("Request path is in white list");
     } else {
       await signOut({
-        redirect: false,
-        // callbackUrl: "/auth?type=login",
+        redirect: true,
+        callbackUrl: "/auth?type=login",
       });
       localStorage.clear();
     }

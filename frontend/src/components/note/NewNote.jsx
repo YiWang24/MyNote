@@ -24,19 +24,20 @@ import {
 } from "@/components/ui/select";
 
 const NewNote = () => {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [content, setContent] = useState("");
-  const { categories, controlNoteModal, isNoteModalOpen, createNote } =
-    useNoteContext();
+  const {
+    newNote,
+    setNewNote,
+    categories,
+    controlNoteModal,
+    isNoteModalOpen,
+    createNote,
+  } = useNoteContext();
   const formRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createNote({ title, category, content });
-    setTitle("");
-    setCategory("");
-    setContent("");
+    await createNote(newNote);
+    setNewNote({});
     controlNoteModal();
   };
 
@@ -107,14 +108,21 @@ const NewNote = () => {
                     <Input
                       id="title"
                       name="title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      value={newNote.title}
+                      onChange={(e) =>
+                        setNewNote({ ...newNote, title: e.target.value })
+                      }
                       placeholder="Title of your note"
                     />
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="category">Framework</Label>
-                    <Select onValueChange={setCategory}>
+                    <Select
+                      onValueChange={(value) =>
+                        setNewNote({ ...newNote, category: value })
+                      }
+                      value={newNote.category}
+                    >
                       <SelectTrigger id="category">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
@@ -132,8 +140,10 @@ const NewNote = () => {
                     <Textarea
                       id="content"
                       name="content"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
+                      value={newNote.content}
+                      onChange={(e) =>
+                        setNewNote({ ...newNote, content: e.target.value })
+                      }
                       placeholder="Type your note here."
                       className="h-60"
                     />
