@@ -2,6 +2,7 @@ export const API_ROUTES = {
   AUTH: {
     REGISTER: "/auth/register",
     LOGIN: "/auth/login",
+    INFO: "/auth/info",
   },
   NOTE: {
     CREATE: "/notes",
@@ -9,10 +10,10 @@ export const API_ROUTES = {
     UPDATE: (id) => `/notes/${id}`,
     DELETE: (id) => `/notes/${id}`,
   },
-  CATEGORY:{
+  CATEGORY: {
     CREATE: "/categories",
     GET: "/categories",
     UPDATE: (id) => `/categories/${id}`,
-    DELETE:"/categories"
-  }
+    DELETE: "/categories",
+  },
 };

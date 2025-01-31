@@ -7,38 +7,34 @@ const NoteCategory = () => {
     useNoteContext();
 
   return (
-    <div>
-      <div>
-        <nav className="flex gap-4" aria-label="Tabs">
-          <button
-            onClick={() => setSelectedCategory(() => "all")}
-            className={`rounded-lg p-2 text-[12px] pl-4 pr-4 border border-red-500 ${
-              selectedCategory === "all"
-                ? "bg-red-500 text-white"
-                : "bg-transparent text-red-500"
-            }`}
-          >
-            All
-          </button>
+    <nav className="flex flex-wrap gap-2 p-2  " aria-label="Tabs">
+      <button
+        onClick={() => setSelectedCategory(() => "all")}
+        className={`rounded-lg     px-6 py-1.5   text-[12px] md:text-[18px] border border-red-500 ${
+          selectedCategory === "all"
+            ? "bg-red-500 text-white"
+            : "bg-transparent text-red-500"
+        }`}
+      >
+        All
+      </button>
 
-          {categories.map((category) => (
-            <button
-              // onClick={() => handleClickedCategory(uniqueCategory)}
-              key={category._id}
-              onClick={() => setSelectedCategory(() => category._id)}
-              className={`rounded-lg p-2 text-[12px] pl-4 pr-4 border border-red-500
+      {categories.map((category) => (
+        <button
+          // onClick={() => handleClickedCategory(uniqueCategory)}
+          key={category._id}
+          onClick={() => setSelectedCategory(() => category._id)}
+          className={`rounded-lg px-6 py-1.5 text-[12px]  md:text-[18px]   border border-red-500
              text-red-500 ${
                selectedCategory === category._id
                  ? "bg-red-500 text-white"
                  : "bg-transparent : text-red-500"
              }`}
-            >
-              {category.type}
-            </button>
-          ))}
-        </nav>
-      </div>
-    </div>
+        >
+          {category.type}
+        </button>
+      ))}
+    </nav>
   );
 };
 

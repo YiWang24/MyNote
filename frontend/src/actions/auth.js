@@ -124,6 +124,18 @@ export async function login(prevState, formData) {
   redirect("/notes");
 }
 
+export async function fetchInfo() {
+  try {
+    const response = await authApi.info();
+    // console.log(response);
+    return response.data.user;
+  } catch (err) {
+    return {
+      errors: ["Error fetching user info"],
+    };
+  }
+}
+
 export async function authAction(type, prevState, formDate) {
   if (type === "login") {
     return login(prevState, formDate);

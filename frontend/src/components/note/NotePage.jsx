@@ -1,3 +1,4 @@
+"use client";
 import {
   Pagination,
   PaginationContent,
@@ -7,30 +8,60 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
+import { useNoteContext } from "@/lib/noteContext";
 function NotePage() {
-  return (
-    <Pagination className={"absolute bottom-4 left-0 right-0 justify-center "}>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
+  const { noteMeta, setSelectedPage } = useNoteContext();
+  const { totalNotes, totalPages, currentPage } = noteMeta;
+
+  const handlePageChange = (newPage) => {
+    setSelectedPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    const startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxVisiblePages / 2)
+    );
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <PaginationItem key={i}>
+          <PaginationLink
+            onClick={() => handlePageChange(i)}
+            isActive={currentPage === i}
+            className={"hover:bg-blue-500 hover:text-white cursor-pointer"}
+          >
+            {i}
           </PaginationLink>
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
+      );
+    }
+    return pages;
+  };
+
+  return (
+    <Pagination className="absolute bottom-4 left-0 right-0 justify-center">
+      <PaginationContent>
+        <PaginationItem className="cursor-pointer">
+          <PaginationPrevious
+            onClick={() => handlePageChange(currentPage - 1)}
+            className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+          />
         </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+
+        {renderPageNumbers()}
+
+        <PaginationItem className="cursor-pointer">
+          <PaginationNext
+            href="#"
+            onClick={() => handlePageChange(currentPage + 1)}
+            className={
+              currentPage >= totalPages ? "pointer-events-none opacity-50" : ""
+            }
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

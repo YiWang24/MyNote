@@ -9,7 +9,7 @@ import { TextAnimate } from "../ui/text-animate";
 const NoteTitle = () => {
   const { controlCategoryModal, controlNoteModal } = useNoteContext();
   return (
-    <div className="flex justify-between">
+    <div className="flex flex-col gap-2   sm:flex-row   justify-between">
       <div className="flex gap-2 items-center">
         <Avatar className="h-9 w-9 bg-red-500">
           <AvatarImage src={"/name.png"} />

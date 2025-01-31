@@ -9,7 +9,14 @@ const noteController = {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
-    console.log("user get notes", userId, noteId, category, page, limit, skip);
+    // console.log("user get notes", {
+    //   userId,
+    //   noteId,
+    //   category,
+    //   page,
+    //   limit,
+    //   skip,
+    // });
     try {
       //find note by id
       if (noteId) {
@@ -24,17 +31,24 @@ const noteController = {
       }
       //find all notes
       else {
-        const notes = await Note.find({
+        const query = {
           userId,
           category: category ? category : { $ne: null },
-        })
+        };
+        const notes = await Note.find(query)
           .skip(skip)
           .limit(limit)
           .populate("category", "type ")
           .populate("userId", "firstName lastName email image");
-        const totalNotes = await Note.countDocuments();
+        const totalNotes = await Note.countDocuments(query);
         const totalPages = Math.ceil(totalNotes / limit);
-        console.log("user get all  notes", userId, totalNotes, totalPages);
+        console.log(
+          "user get all  notes",
+          userId,
+          totalNotes,
+          totalPages,
+          notes
+        );
         res.status(200).json({
           message: "get all notes",
           data: notes,

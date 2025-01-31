@@ -54,7 +54,7 @@ const authController = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
-      console.log("email", email,password);
+      console.log("email", email, password);
       // Validate user input
       if (!email || !password) {
         return res
@@ -71,7 +71,7 @@ const authController = {
 
       // Check if password is correct
       const validPassword = await bcrypt.compare(password, user.password);
- 
+
       if (!validPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -91,6 +91,17 @@ const authController = {
         token,
       });
       console.log("Logged in successfully", user.email, token);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  },
+
+  async info(req, res) {
+    console.log("get user information", req.auth);
+    try {
+      // console.log("get user information", req.auth);
+      const user = await User.findById(req.auth.id).select("-password");
+      res.status(200).json({ user });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }

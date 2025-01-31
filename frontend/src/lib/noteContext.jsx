@@ -12,10 +12,12 @@ import {
   fetchUpdateNote,
 } from "@/actions/note";
 import toast from "react-hot-toast";
-
+import { fetchInfo } from "@/actions/auth";
 export const NoteContext = createContext({
   categories: [],
+  user: {},
   selectedCategory: "",
+  selectedPage: 1,
   notes: [],
   noteMeta: {},
   newNote: {},
@@ -25,6 +27,8 @@ export const NoteContext = createContext({
   setNewNote: () => {},
   setSelectedCategory: () => {},
   setCategories: () => {},
+  setSelectedPage: () => {},
+  setQuery: () => {},
   controlCategoryModal: () => {},
   controlNoteModal: () => {},
   deleteCategories: () => {},
@@ -35,8 +39,10 @@ export const NoteContext = createContext({
 });
 
 export function NoteContextProvider({ children }) {
+  const [user, setUser] = useState({});
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedPage, setSelectedPage] = useState(1);
   const [notes, setNotes] = useState([]);
   const [noteMeta, setNoteMeta] = useState({});
   const [newNote, setNewNote] = useState({
@@ -48,7 +54,7 @@ export function NoteContextProvider({ children }) {
   });
   const [query, setQuery] = useState({
     page: 1,
-    limit: 3,
+    limit: 6,
     category: "",
   });
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -70,12 +76,20 @@ export function NoteContextProvider({ children }) {
     }
   };
 
-  const refreshNotes = async (category) => {
+  const refreshNotes = async (params) => {
+    console.log(params);
     try {
+      let category = params?.category;
+      if (category === "all") {
+        category = "";
+      }
+      let page = params?.page;
+
       setIsLoading(true);
       const newQuery = {
         ...query,
-        category: category === "all" || category === null ? "" : category,
+        category,
+        page,
       };
       const response = await fetchNotes(newQuery);
       // console.log(response);
@@ -89,14 +103,32 @@ export function NoteContextProvider({ children }) {
     }
   };
 
+  const refreshInfo = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetchInfo();
+      // console.log(response);
+      setUser(response);
+    } catch (error) {
+      toast.error("Failed to fetch user info");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     refreshCategories();
     refreshNotes();
+    refreshInfo();
   }, []);
 
   useEffect(() => {
-    refreshNotes(selectedCategory);
+    refreshNotes({ category: selectedCategory });
   }, [selectedCategory]);
+
+  useEffect(() => {
+    refreshNotes({ category: selectedCategory, page: selectedPage });
+  }, [selectedPage]);
 
   const deleteCategories = async (categories) => {
     try {
@@ -141,21 +173,19 @@ export function NoteContextProvider({ children }) {
   };
 
   const getNoteById = (noteId) => {
-    {
-      const selectNode = notes.find((note) => note._id === noteId);
-      // console.log(selectNode);
-      if (selectNode) {
-        setNewNote({
-          id: selectNode._id,
-          title: selectNode.title,
-          content: selectNode.content,
-          category: selectNode.category._id,
-          update: true,
-        });
-        controlNoteModal();
-      } else {
-        toast.error("Note not found");
-      }
+    const selectNode = notes.find((note) => note._id === noteId);
+    // console.log(selectNode);
+    if (selectNode) {
+      setNewNote({
+        id: selectNode._id,
+        title: selectNode.title,
+        content: selectNode.content,
+        category: selectNode.category._id,
+        update: true,
+      });
+      controlNoteModal();
+    } else {
+      toast.error("Note not found");
     }
   };
 
@@ -163,7 +193,7 @@ export function NoteContextProvider({ children }) {
     try {
       await fetchDeleteNotes(noteId);
       toast.success("Note deleted successfully");
-      refreshNotes();
+      refreshNotes(selectedCategory);
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -171,8 +201,10 @@ export function NoteContextProvider({ children }) {
 
   const value = {
     isLoading,
+    user,
     categories,
     selectedCategory,
+    selectedPage,
     notes,
     newNote,
     noteMeta,
@@ -180,6 +212,8 @@ export function NoteContextProvider({ children }) {
     isNoteModalOpen,
     setNewNote,
     setSelectedCategory,
+    setQuery,
+    setSelectedPage,
     controlCategoryModal,
     controlNoteModal,
     deleteCategories,

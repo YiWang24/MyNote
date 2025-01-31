@@ -1,4 +1,8 @@
 import React from "react";
+import { format, formatDistanceToNow } from "date-fns";
+import { HyperText } from "@/components/ui/hyper-text";
+import { SparklesText } from "@/components/ui/sparkles-text";
+
 import {
   Dialog,
   DialogContent,
@@ -12,8 +16,10 @@ import {
 import { Meteors } from "../ui/meteors";
 import { useNoteContext } from "@/lib/noteContext";
 import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
 
 const NoteCard = ({ note }) => {
+  const { data: session } = useSession();
   const { getNoteById, deleteNote } = useNoteContext();
   const handleClick = () => {
     getNoteById(note._id);
@@ -21,6 +27,14 @@ const NoteCard = ({ note }) => {
   const handleDialogClick = (e) => {
     e.stopPropagation(); // Stop event from reaching parent
   };
+  const formatDate = (date) => {
+    return format(new Date(date), "yyyy-MM-dd");
+  };
+
+  const getTimeAgo = (date) => {
+    return formatDistanceToNow(new Date(date), { addSuffix: true });
+  };
+
   return (
     <div
       onClick={handleClick}
@@ -31,9 +45,9 @@ const NoteCard = ({ note }) => {
 
       <div className="sm:flex sm:justify-between sm:gap-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
+          <HyperText className="text-xl md:text:2xl xl:text-3xl font-bold text-gray-900 sm:text-xl">
             {note.title}
-          </h3>
+          </HyperText>
 
           <p className="mt-1 text-xs font-medium text-gray-600">
             {note.firstName} {note.lastName}
@@ -47,12 +61,12 @@ const NoteCard = ({ note }) => {
           <Dialog>
             <DialogTrigger
               className="inline-flex items-center px-4 py-2 rounded-md 
-    text-sm font-medium transition-colors
-    bg-red-50 text-red-600
-    hover:bg-red-100
-    dark:bg-red-900/10 dark:text-red-500 dark:hover:bg-red-900/20
-    focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-    disabled:pointer-events-none disabled:opacity-50"
+                        text-sm font-medium transition-colors
+                        bg-red-50 text-red-600
+                        hover:bg-red-100
+                        dark:bg-red-900/10 dark:text-red-500 dark:hover:bg-red-900/20
+                        focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
+                        disabled:pointer-events-none disabled:opacity-50"
             >
               Delete
             </DialogTrigger>
@@ -79,20 +93,26 @@ const NoteCard = ({ note }) => {
       </div>
 
       <div className="mt-4 ">
-        <p className="text-pretty text-sm text-gray-500">{note.content}</p>
+        <SparklesText className="text-pretty text-lg" text={note.content} />
       </div>
 
-      <dl className="mt-6 flex gap-4 sm:gap-6">
+      <dl className="mt-6 flex justify-between gap-4 sm:gap-6">
         <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-gray-600">
+          <dt className="inline-flex h-6 items-center justify-center rounded-md bg-blue-50 px-3 py-1 text-xs font-medium leading-none text-blue-700 ring-1 ring-inset ring-blue-700/10 hover:bg-blue-100 transition-colors">
             {note.category.type}
           </dt>
-          <dd className="text-xs text-gray-500">{note.createdAt}</dd>
+          <dd className="text-xs text-gray-500">
+            {formatDate(note.createdAt)}
+          </dd>
         </div>
 
         <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-gray-600">Reading time</dt>
-          <dd className="text-xs text-gray-500">3 minute</dd>
+          <dt className="inline-flex h-6 items-center justify-center rounded-md bg-purple-50 px-3 py-1 text-xs font-medium leading-none text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100 transition-colors">
+            {session.user.name}
+          </dt>
+          <dd className="text-xs text-gray-500">
+            {getTimeAgo(note.createdAt)}
+          </dd>
         </div>
       </dl>
     </div>

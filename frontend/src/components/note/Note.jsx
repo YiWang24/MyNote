@@ -7,24 +7,18 @@ import NotePage from "./NotePage";
 import NewNote from "./NewNote";
 import NewNoteCategory from "./NewNoteCategory";
 
-import { NoteContextProvider } from "@/lib/noteContext";
-
 const Note = async () => {
-
-
   return (
-    <NoteContextProvider>
-      <NeonGradientCard className=" w-[90%] h-[90%]">
-        <div className=" w-full h-full  rounded-md  p-7 flex flex-col gap-9 ">
-          <NoteTitle />
-          <NoteCategory />
-          <NoteArea />
-          <NotePage />
-          <NewNote />
-          <NewNoteCategory  />
-        </div>
-      </NeonGradientCard>
-    </NoteContextProvider>
+    <NeonGradientCard className=" w-[90%] h-[90%]">
+      <div className=" w-full h-full  rounded-md  p-7 flex flex-col gap-9 ">
+        <NoteTitle />
+        <NoteCategory />
+        <NoteArea />
+        <NotePage />
+        <NewNote />
+        <NewNoteCategory />
+      </div>
+    </NeonGradientCard>
   );
 };
 
