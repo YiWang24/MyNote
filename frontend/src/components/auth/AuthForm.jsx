@@ -83,7 +83,7 @@ const AuthForm = ({ type }) => {
           />
         </div>
 
-        <div className={`col-span-6 ${type==="register" && "sm:col-span-3"}`}>
+        <div className={`col-span-6 ${type === "register" && "sm:col-span-3"}`}>
           <label
             htmlFor="Password"
             className="block text-sm font-medium text-gray-700"

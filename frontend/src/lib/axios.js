@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getSession } from "./getSession";
-import { redirect } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 import { signOut } from "@/auth";
 // Create an axios instance
 const request = axios.create({
@@ -21,18 +21,25 @@ request.interceptors.request.use(
 
     const session = await getSession();
     const token = session?.accessToken;
-    const expiresAt = new Date(session?.expires);
-    // console.log(session);
-    console.log("token: ", token, expiresAt);
+    if (token) {
+      const { exp } = jwtDecode(token);
+      const expiresAt = exp * 1000;
+      if (Date.now() >= expiresAt) {
+        await signOut({
+          redirect: false,
+        });
+        localStorage.clear();
+      }
+    }
+    // console.log("token: ", token, expiresAt);
 
-    if (!whiteList.includes(config.url) && token && expiresAt > new Date()) {
+    if (!whiteList.includes(config.url) && token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (whiteList.includes(config.url)) {
       console.log("Request path is in white list");
     } else {
       await signOut({
-        redirect: true,
-        callbackUrl: "/auth?type=login",
+        redirect: false,
       });
       localStorage.clear();
     }

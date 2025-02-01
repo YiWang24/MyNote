@@ -3,15 +3,39 @@ const Note = require("../models/note");
 
 // Create a new category
 exports.createCategory = async (req, res) => {
+  const userId = req.auth.id;
+  const type = req.body.type;
+
   try {
-    const userId = req.auth.id;
-    const category = new Category({ ...req.body, userId });
-    // console.log("Category", category, userId);
+    console.log("Current userId:", userId);
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is missing" });
+    }
+
+    const existingCategory = await Category.findOne({ type, userId })
+      .lean()
+      .exec();
+    console.log("Existing Category:", existingCategory);
+
+    if (existingCategory) {
+      console.log("Category already exists for type:", type, "userId:", userId);
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
+    const category = new Category({
+      type,
+      userId,
+    });
+
+    // Try to save and catch potential duplicate key errors
+
     await category.save();
+
+    console.log("Created Category", category, "for user:", userId);
     res.status(201).json(category);
-    console.log("Category created", category, userId);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error occurred:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 

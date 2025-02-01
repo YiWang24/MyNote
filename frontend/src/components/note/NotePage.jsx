@@ -24,8 +24,8 @@ function NotePage() {
       1,
       currentPage - Math.floor(maxVisiblePages / 2)
     );
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    endPage = Math.max(endPage, 1);
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <PaginationItem key={i}>
@@ -45,7 +45,7 @@ function NotePage() {
   return (
     <Pagination className="absolute bottom-4 left-0 right-0 justify-center">
       <PaginationContent>
-        <PaginationItem className="cursor-pointer">
+        <PaginationItem className="cursor-pointer hidden md:block">
           <PaginationPrevious
             onClick={() => handlePageChange(currentPage - 1)}
             className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
@@ -54,7 +54,7 @@ function NotePage() {
 
         {renderPageNumbers()}
 
-        <PaginationItem className="cursor-pointer">
+        <PaginationItem className="cursor-pointer hidden md:block">
           <PaginationNext
             href="#"
             onClick={() => handlePageChange(currentPage + 1)}

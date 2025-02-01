@@ -118,7 +118,7 @@ const NewNote = () => {
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="category">Type</Label>
                     <Select
-                      defaultValue={categories.map(
+                      defaultValue={categories?.map(
                         (category) => category._id === newNote.category
                       )}
                       onValueChange={(value) =>

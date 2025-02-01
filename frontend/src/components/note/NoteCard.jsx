@@ -16,11 +16,9 @@ import {
 import { Meteors } from "../ui/meteors";
 import { useNoteContext } from "@/lib/noteContext";
 import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
 
 const NoteCard = ({ note }) => {
-  const { data: session } = useSession();
-  const { getNoteById, deleteNote } = useNoteContext();
+  const { user, getNoteById, deleteNote } = useNoteContext();
   const handleClick = () => {
     getNoteById(note._id);
   };
@@ -99,7 +97,7 @@ const NoteCard = ({ note }) => {
       <dl className="mt-6 flex justify-between gap-4 sm:gap-6">
         <div className="flex flex-col-reverse">
           <dt className="inline-flex h-6 items-center justify-center rounded-md bg-blue-50 px-3 py-1 text-xs font-medium leading-none text-blue-700 ring-1 ring-inset ring-blue-700/10 hover:bg-blue-100 transition-colors">
-            {note.category.type}
+            {note.category?.type}
           </dt>
           <dd className="text-xs text-gray-500">
             {formatDate(note.createdAt)}
@@ -108,7 +106,7 @@ const NoteCard = ({ note }) => {
 
         <div className="flex flex-col-reverse">
           <dt className="inline-flex h-6 items-center justify-center rounded-md bg-purple-50 px-3 py-1 text-xs font-medium leading-none text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100 transition-colors">
-            {session.user.name}
+            {user.name}
           </dt>
           <dd className="text-xs text-gray-500">
             {getTimeAgo(note.createdAt)}

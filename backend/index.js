@@ -20,7 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-  expressjwt({ secret: config.jwt.secret, algorithms: ["HS256"] }).unless({
+  expressjwt({
+    secret: config.jwt.secret,
+    algorithms: ["HS256"],
+  }).unless({
     path: ["/api/auth/login", "/api/auth/register"],
   })
 );

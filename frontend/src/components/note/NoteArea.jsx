@@ -20,7 +20,7 @@ const NoteArea = () => {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2   lg:grid-cols-3 overflow-auto ">
       {!isLoading &&
         notes?.length > 0 &&
-        notes.map((note) => <NoteCard key={note._id} note={note} />)}
+        notes?.map((note) => <NoteCard key={note._id} note={note} />)}
     </div>
   );
 };

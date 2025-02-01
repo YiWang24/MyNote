@@ -19,7 +19,7 @@ const NoteCategory = () => {
         All
       </button>
 
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <button
           // onClick={() => handleClickedCategory(uniqueCategory)}
           key={category._id}

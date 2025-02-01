@@ -51,7 +51,7 @@ const NoteSideBar = () => {
               </summary>
 
               <ul className="mt-2 space-y-1 px-4">
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <li
                     key={category._id}
                     onClick={() => setSelectedCategory(category._id)}

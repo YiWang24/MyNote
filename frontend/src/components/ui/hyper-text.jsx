@@ -70,7 +70,7 @@ export function HyperText({
     const interval = setInterval(() => {
       if (iterationCount.current < maxIterations) {
         setDisplayText((currentText) =>
-          currentText.map((letter, index) =>
+          currentText?.map((letter, index) =>
             letter === " "
               ? letter
               : index <= iterationCount.current
