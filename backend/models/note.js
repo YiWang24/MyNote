@@ -20,6 +20,10 @@ const NoteSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  state: {
+    type: Boolean,
+    default: false,
+  },
   updatedAt: {
     type: Date,
     default: Date.now,

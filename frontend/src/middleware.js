@@ -8,26 +8,20 @@ const publicPaths = ["/auth"];
 export default async function middleware(request) {
   const { pathname } = request.nextUrl;
 
-  if (publicPaths.some((path) => pathname.startsWith(path))) {
-    return NextResponse.next();
-  }
-
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  if (isProtectedPath) {
+  if (protectedPaths.some((path) => pathname.startsWith(path))) {
     const token = await getToken({
       req: request,
       secret: process.env.AUTH_SECRET,
     });
 
-    // Check token expiration
-    // console.log("protected path", request.nextUrl, token);
-    if (!token || token.exp < Math.floor(Date.now() / 1000)) {
-      // const signInUrl = new URL("/auth?type=login", request.url);
-      // signInUrl.searchParams.set("callbackUrl", pathname);
-      // return NextResponse.redirect(signInUrl);
+    if (!token) {
+      console.log("🔴 No token found, redirecting to login");
+      return NextResponse.redirect(new URL("/auth?type=login", request.url));
+    }
+
+    if (token.exp < Math.floor(Date.now() / 1000)) {
+      console.log("🟡 Token expired, redirecting to login");
+      return NextResponse.redirect(new URL("/auth?type=login", request.url));
     }
   }
 

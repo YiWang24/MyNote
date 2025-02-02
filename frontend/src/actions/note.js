@@ -40,3 +40,11 @@ export async function fetchDeleteNotes(id) {
     throw new Error(error);
   }
 }
+
+export async function fetchUpdateNoteState(id) {
+  try {
+    await noteApi.updateState(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+}

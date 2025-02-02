@@ -10,6 +10,7 @@ import {
   fetchCreateNote,
   fetchDeleteNotes,
   fetchUpdateNote,
+  fetchUpdateNoteState,
 } from "@/actions/note";
 import toast from "react-hot-toast";
 import { fetchInfo } from "@/actions/auth";
@@ -36,6 +37,7 @@ export const NoteContext = createContext({
   createNote: () => {},
   getNoteById: () => {},
   deleteNote: () => {},
+  updateNoteState: () => {},
 });
 
 export function NoteContextProvider({ children }) {
@@ -199,6 +201,16 @@ export function NoteContextProvider({ children }) {
     }
   };
 
+  const updateNoteState = async (noteId) => {
+    try {
+      await fetchUpdateNoteState(noteId);
+      toast.success("Note state updated successfully");
+      refreshNotes();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
   const value = {
     isLoading,
     user,
@@ -221,6 +233,7 @@ export function NoteContextProvider({ children }) {
     createNote,
     getNoteById,
     deleteNote,
+    updateNoteState,
   };
 
   return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;

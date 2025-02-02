@@ -9,6 +9,7 @@ export const API_ROUTES = {
     GET: "/notes",
     UPDATE: (id) => `/notes/${id}`,
     DELETE: (id) => `/notes/${id}`,
+    UPDATE_STATE: (id) => `/notes/${id}`,
   },
   CATEGORY: {
     CREATE: "/categories",

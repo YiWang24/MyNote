@@ -2,7 +2,7 @@ import React from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import { HyperText } from "@/components/ui/hyper-text";
 import { SparklesText } from "@/components/ui/sparkles-text";
-
+import { ShinyButton } from "@/components/ui/shiny-button";
 import {
   Dialog,
   DialogContent,
@@ -18,12 +18,18 @@ import { useNoteContext } from "@/lib/noteContext";
 import { Button } from "../ui/button";
 
 const NoteCard = ({ note }) => {
-  const { user, getNoteById, deleteNote } = useNoteContext();
-  const handleClick = () => {
+  const { user, getNoteById, deleteNote, updateNoteState } = useNoteContext();
+  const handleCardClick = () => {
     getNoteById(note._id);
   };
   const handleDialogClick = (e) => {
     e.stopPropagation(); // Stop event from reaching parent
+  };
+
+  const handleStateClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    updateNoteState(note._id);
   };
   const formatDate = (date) => {
     return format(new Date(date), "yyyy-MM-dd");
@@ -35,7 +41,7 @@ const NoteCard = ({ note }) => {
 
   return (
     <div
-      onClick={handleClick}
+      onClick={handleCardClick}
       className="relative block cursor-pointer overflow-hidden rounded-lg border bg-pink-100 border-gray-100 p-4 sm:p-6 lg:p-8"
     >
       <Meteors number={30} />
@@ -48,7 +54,7 @@ const NoteCard = ({ note }) => {
           </HyperText>
 
           <p className="mt-1 text-xs font-medium text-gray-600">
-            {note.firstName} {note.lastName}
+            {user.firstName} {user.lastName}
           </p>
         </div>
 
@@ -105,8 +111,17 @@ const NoteCard = ({ note }) => {
         </div>
 
         <div className="flex flex-col-reverse">
-          <dt className="inline-flex h-6 items-center justify-center rounded-md bg-purple-50 px-3 py-1 text-xs font-medium leading-none text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100 transition-colors">
-            {user.name}
+          <dt onClick={handleStateClick}>
+            {!note.state && (
+              <ShinyButton className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-md bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-600/20 hover:bg-amber-100 transition-colors">
+                To Do
+              </ShinyButton>
+            )}
+            {note.state && (
+              <ShinyButton className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-md bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/20 hover:bg-emerald-100 transition-colors">
+                Done
+              </ShinyButton>
+            )}
           </dt>
           <dd className="text-xs text-gray-500">
             {getTimeAgo(note.createdAt)}

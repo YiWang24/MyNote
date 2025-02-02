@@ -119,6 +119,23 @@ const noteController = {
       res.status(500).json({ message: error.message });
     }
   },
+
+  async updateNoteState(req, res) {
+    try {
+      const userId = req.auth.id;
+      const noteId = req.params.id;
+      const note = await Note.findOne({ userId, _id: noteId });
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      note.state = !note.state;
+      await note.save();
+      res.status(200).json({ message: "Note state updated successfully" });
+      console.log("user update note state", userId, noteId);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = noteController;
