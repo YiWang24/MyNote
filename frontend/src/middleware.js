@@ -11,6 +11,7 @@ export default async function middleware(request) {
     const token = await getToken({
       req: request,
       secret: process.env.AUTH_SECRET,
+      raw: true,
     });
 
     if (!token) {

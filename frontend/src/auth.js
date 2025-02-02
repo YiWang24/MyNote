@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async jwt({ token, user, account }) {
-      console.log("jwt callback", { token, user, account });
+      // console.log("jwt callback", { token, user, account });
       if (
         account &&
         (account.provider === "google" || account.provider === "github")
