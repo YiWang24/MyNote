@@ -1,22 +1,31 @@
-import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-
+import { getSession } from "./lib/getSession";
+import { jwtDecode } from "jwt-decode";
+import { signOut } from "@/auth";
 const protectedPaths = ["/notes"];
-
 
 export default async function middleware(request) {
   const { pathname } = request.nextUrl;
+  const baseUrl = request.nextUrl.origin;
 
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-      raw: true,
-    });
+    const session = await getSession();
+    const token = session?.accessToken;
 
     if (!token) {
       console.log("🔴 No token found, redirecting to login");
-      return NextResponse.redirect(new URL("/auth?type=login", request.url));
+      return NextResponse.redirect(new URL("/auth?type=login", baseUrl));
+    }
+
+    const { exp } = jwtDecode(token);
+    const expiresAt = exp * 1000;
+
+    if (Date.now() >= expiresAt) {
+      await signOut({
+        redirect: false,
+      });
+      localStorage.clear();
+      return NextResponse.redirect(new URL("/auth?type=login", baseUrl));
     }
 
     // if (token.exp < Math.floor(Date.now() / 1000)) {
