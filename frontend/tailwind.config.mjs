@@ -198,6 +198,9 @@ export default {
   			'background-position-spin': 'background-position-spin 3000ms infinite alternate',
   			pulse: 'pulse var(--duration) ease-out infinite',
   			rainbow: 'rainbow var(--speed, 2s) infinite linear'
+  		},
+  		maxWidth: {
+  			'aui-thread': 'var(--aui-thread-max-width)'
   		}
   	}
   },

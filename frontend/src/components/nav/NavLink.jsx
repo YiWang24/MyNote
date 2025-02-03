@@ -13,6 +13,14 @@ const NavLink = () => {
               Note
             </Link>
           </li>
+          <li>
+            <Link
+              className="text-gray-500 transition hover:text-gray-500/75"
+              href="/chatgpt"
+            >
+              ChatGPT
+            </Link>
+          </li>
         </ul>
       </nav>
     </div>

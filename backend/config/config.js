@@ -23,9 +23,12 @@ const config = {
   cors: {
     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
   },
-  google:{
+  google: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  }
+  },
+  openai: {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  },
 };
 
 module.exports = config;

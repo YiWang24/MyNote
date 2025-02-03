@@ -21,10 +21,6 @@ export default async function middleware(request) {
     const expiresAt = exp * 1000;
 
     if (Date.now() >= expiresAt) {
-      await signOut({
-        redirect: false,
-      });
-      localStorage.clear();
       return NextResponse.redirect(new URL("/auth?type=login", baseUrl));
     }
 
